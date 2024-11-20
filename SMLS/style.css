@@ -1,0 +1,104 @@
+html, body, div, p, li {
+    font-family: Abel, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+#contents {
+    background: none repeat scroll 0 0 #FFFFFF;
+    margin: 0 auto;
+    padding: 10px 20px;
+    width: 750px;
+    opacity: 1;
+}
+
+ul.menu {
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 0.2em 1em 0.1em;
+}
+
+ul.menu li{
+    display: inline;
+    font-weight: normal;
+    float: right;
+    text-align: center;
+    padding: 0px 0px 0px 0px;
+    font-size: 20px;
+    opacity: 0.8;
+}
+
+ul.menu li + li::before {
+    content: "\26AC";
+    float: right;
+    padding: 0px 10px;
+    color: #225088;
+}
+
+a.current {
+    font-weight: bold;
+}
+
+span.journalbold {
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+span.journal {
+
+}
+
+span.pos {
+
+}
+
+span.sub {
+    padding-left: 148px;
+}
+
+
+a.doi {
+    color: #d16b2c;
+}
+
+h1 {
+    background-color: transparent;
+    border-bottom: 2px solid black;
+    clear: both;
+    font-size: 24px;
+    font-weight: normal;
+    margin: 10pt 0 15pt;
+    padding: 0.2em 1em 0.1em;
+    opacity: 0.8;
+}
+
+h2 {
+    border-bottom: 1px solid black;
+    clear: both;
+    font-size: 18px;
+    margin: 0;
+    padding: 0.3em 0.5em 0.1em;
+    opacity: 0.8;
+}
+
+ul.lists li {
+    list-style-type: circle;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+
+ol.lists li {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+:link, *:visited, .clickable {
+    background: none repeat scroll 0 0 transparent;
+    color: #225088;
+    text-decoration: none;
+}
+:link:hover, *:visited:hover, .clickable:hover {
+    text-decoration: underline;
+}
+
