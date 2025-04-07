@@ -85,8 +85,55 @@ let sum' l =
   in aux 0 l
 ;;
 
-let rec solve sol set tot =
-  let s = sum' sol
-  in if s=tot then sol
-     else if s<tot then solve (List.hd set :: sol) (List.tl set) tot
-     else solve (setdiff sol (List.hd sol)) 
+exception NotFound ;;
+
+let search_subset set tot =
+  let rec search_aux solution others tot' =
+    let s = sum' solution
+    in if s=tot' then solution
+       else if s>tot' then raise NotFound 
+       else match others with  (*we have s<tot*)
+              [] -> raise NotFound
+            | x::xs ->
+               try search_aux (x::solution) xs tot'
+               with NotFound -> search_aux (solution) xs tot'         
+  in search_aux [] set tot
+;;
+
+(*Versione alternativa*)
+let search_subset' set tot =
+  let rec search_aux solution others rest =
+    if rest=0 then solution
+    else if rest<0 then raise NotFound
+    else match others with  (*we have rest>0*)
+           [] -> raise NotFound
+         | x::xs ->
+            try search_aux (x::solution) xs (rest-x)
+            with NotFound -> search_aux (solution) xs rest 
+  in search_aux [] set tot
+;;
+
+(*Seconda versione alternativa*)
+let search_subset'' set tot = 
+  let rec search_aux solution rest = function
+      [] -> if rest>0 then raise NotFound
+            else solution (*rest < 0 is impossible*)
+    | x::xs -> if x>rest then search_aux solution rest xs
+               else if x=rest then solution
+               else try search_aux (x::solution) (rest-x) xs
+                    with NotFound -> search_aux solution rest xs
+  in search_aux [] tot set
+;;
+
+let rec mapcons a = function
+    [] -> []
+  | l::ls -> (a::l) :: (mapcons a ls)
+;;
+
+let rec search_all tot = function
+    [] -> if tot>0 then []
+          else [[]] (*tot < 0 is impossible*)
+  | x::xs -> if x>tot then search_all tot xs
+             else (mapcons x (search_all (tot-x) xs)) @ (search_all tot xs)  
+;;
+                   
