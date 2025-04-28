@@ -23,7 +23,7 @@ let from_morse = function
   | "-.-" -> 'k'
   | ".-.." -> 'l'
   | "--" -> 'm'
-  | "-.." -> 'n'
+  | "-." -> 'n'
   | "---" -> 'o'
   | ".--." -> 'p'
   | "--.-" -> 'q'
@@ -65,7 +65,7 @@ let to_morse = function
   | 'k' -> "-.-"
   | 'l' -> ".-.."
   | 'm' -> "--"
-  | 'n' -> "-.."
+  | 'n' -> "-."
   | 'o' -> "---"
   | 'p' -> ".--."
   | 'q' -> "--.-"
@@ -91,6 +91,32 @@ let to_morse = function
 ;;
 
 let encode_morse l = List.map to_morse l
+;;
+
+let rec implode = function
+    [] -> ""
+  | x::xs -> (String.make 1 x)^(implode xs)
+;;
+
+(*Versione iterativa*)
+let implode' l =
+  let rec aux acc = function
+      [] -> acc
+    | x::xs -> aux (acc^(String.make 1 x)) xs
+  in aux "" l
+;;
+
+let explode s =
+  let rec aux acc i s =
+       if i<0 then acc
+       else aux (s.[i]::acc) (i-1) s
+  in aux [] (String.length s - 1) s
+;;
+
+let decode_morse_to_string l = implode(decode_morse l)
+;;
+
+let encode_morse_from_string s = encode_morse(explode s)
 ;;
 
 let rec powerset = function
@@ -119,7 +145,7 @@ let powerset''' l =
   let rec aux acc = function
       [] -> acc
     | x::xs -> aux (acc @ (List.map (List.cons x) acc)) xs
-  in aux [[]] l
+  in aux [] l
 ;;
 
 let rec cartprod l = function

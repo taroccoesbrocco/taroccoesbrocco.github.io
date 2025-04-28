@@ -35,7 +35,11 @@ let partition p l =
     | x::xs -> if p x then aux (x::acc1) acc2 xs
                else aux acc1 (x::acc2) xs
   in aux [] [] l
-;; 
+;;
+
+(*Versione alternativa*)
+let partition' p l = (List.filter p l, List.filter (function x -> not (p x)) l)
+;;
 
 let pairwith y l = List.map (function x -> (y,x)) l
 ;;
