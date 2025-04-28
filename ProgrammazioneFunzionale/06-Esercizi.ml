@@ -50,6 +50,10 @@ let verifica_riga n l = List.for_all ((>) n) l
 let verifica_matrice n ls = List.exists (List.for_all ((>) n)) ls
 ;;
 
+(*Versione alternativa*)
+let verifica_matrice' n ls = List.exists (verifica_riga n) ls
+;;
+
 let mem l x = List.exists ((=) x) l
 ;;
 

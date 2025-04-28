@@ -122,14 +122,14 @@ let encode_morse_from_string s = encode_morse(explode s)
 let rec powerset = function
     [] -> [[]]
   | x::xs -> let pxs = powerset xs
-             in pxs @ (List.map (List.coms x) pxs)
+             in pxs @ (List.map (List.cons x) pxs)
 ;;
 
 (*La versione seguente non funziona correttamente. Perché?*)
 let rec powerset' = function
     [] -> []
   | x::xs -> let pxs = powerset xs
-             in pxs @ (List.map (List.coms x) pxs)
+             in pxs @ (List.map (List.cons x) pxs)
 ;;
 
 (*Versione iterativa*)
@@ -161,3 +161,6 @@ let cartprod' l1 l2 =
   in aux [] l1 l2
 ;;
 
+(*Versione alternativa*)
+let cartprod'' l1 l2 =  List.flatten(List.map (function x -> (List.map (function y -> (x,y)) l2)) l1)
+;;
