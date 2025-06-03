@@ -74,3 +74,9 @@ let foglia_costo t =
   in let l = tutte_foglie_costi t
      in aux (List.hd l) (List.tl l) 
 ;;
+
+
+let rec same_structure t1 t2 = match (t1,t2) with
+    (Tr(_,ts1),Tr(_,ts2)) -> try List.for_all2 same_structure ts1 ts2
+                             with _ -> false
+;;
