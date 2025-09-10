@@ -26,10 +26,10 @@ let date (d,m,y) =
      else true
 
 (*Versione alternativa*)
-let date (d,m,y) =
+let date' (d,m,y) =
   let bissextile = (y mod 4 = 0) && (y mod 100 <> 0 || y mod 400 = 0) 
-  in if m<1 || m>12 || d<1 then false
-     else not ((m=1 || m=3 || m=5 || m=7 || m=8 || m=10 || m=12) && d>31) || ((m=4 || m=6 || m=9 || m=11) && d>30) || (bissextile && m=2 && d>29) || (not bissextile && m=2 && d>28)
+  in m>=1 && m<=12 && d>=1
+     && not ( ((m=1 || m=3 || m=5 || m=7 || m=8 || m=10 || m=12) && d>31) || ((m=4 || m=6 || m=9 || m=11) && d>30) || (bissextile && m=2 && d>29) || (not bissextile && m=2 && d>28) )
 
 
 let is_after (d1,m1,y1) (d2,m2,y2) =
@@ -39,7 +39,7 @@ let is_after (d1,m1,y1) (d2,m2,y2) =
   else 1
 
 (*Versione alternativa*)
-let is_after dt1 dt2 =
+let is_after' dt1 dt2 =
   if (date dt1  && date dt2) then
     if dt1 = dt2 then 0
     else match (dt1, dt2) with
@@ -61,8 +61,8 @@ let earliest' = function
   | dt::lst -> Some (List.hd(List.sort is_after dt::lst))
 
 (*Versione alternativa*)
-let earliest'' lst  = try Some (List.hd(List.sort is_after lst))
-                 with _ -> None
+let earliest'' lst = try Some (List.hd(List.sort is_after lst))
+                     with _ -> None
 ;;
 
 (* Se lst è una lista con almeno una data non valida, allora l'espressione earliest lst (o earliest' lst o earliest'' lst) restituisce l'eccezione NoComparison (sollevata da is_after), a meno che lst non sia di lunghezza 1 (cioè il suo unico elemento è una data non valida), in qual caso l'espressione restituisce l'unica data.
