@@ -5,16 +5,22 @@ let rec merge l1 l2 =
                      else y::(merge (x::xs) ys)
 ;;
 
-let split l = 
+let rec split = function
+    [] -> ([],[])
+  | [x] -> ([x],[])
+  | x::y::xs -> let (l1,l2) = split xs
+                in (x::l1, y::l2)
+  
+(*Versione iterativa*)
+let split' l = 
   let rec split_aux l1 l2 = function
       [] -> (l1,l2)
     | [x] -> (x::l1,l2)
     | x::y::xs -> split_aux (x::l1) (y::l2) xs
   in split_aux [] [] l
-;;
 
-(*Versione alternativa, più sintetica*)
-let split l = 
+(*Versione iterativa alternativa, più sintetica*)
+let split'' l = 
   let rec split_aux l1 l2 = function
       [] -> (l1,l2)
     | x::xs -> split_aux l2 (x::l1) xs
@@ -33,7 +39,6 @@ let rec merge_gen comp l1 l2 =
     ([],l) | (l,[]) -> l
     | (x::xs,y::ys) -> if (comp x y)=(-1) then x::(merge_gen comp xs (y::ys))
                        else y::(merge_gen comp (x::xs) ys)
-;;
 
 let rec mergesort_gen comp = function
     [] -> []
@@ -45,7 +50,13 @@ let rec mergesort_gen comp = function
 let rec downto' m n =
   if m>n then []
   else n :: downto' m (n-1)
-;;
+
+(*Versione iterativa*)
+let downto'' m n =
+      let rec aux acc m' =
+        if m'>n then acc
+        else aux (m'::acc) (m'+1) 
+      in aux [] m
 
 let upto m n =
   let rec aux acc m' n' =
@@ -67,6 +78,7 @@ let rec flatten = function
   | x::xs -> x @ (flatten xs)
 ;;
 
+(*Versione iterativa*)
 let flatten' ls =
   let rec aux acc = function
       [] -> acc
@@ -78,7 +90,6 @@ let rec conta n = function
     [] -> 0
   | x::xs -> if n=x then 1 + (conta n xs)
              else conta n xs
-;;
 
 let rec conta' acc n = function
     [] -> acc
@@ -90,7 +101,6 @@ let rec contatutti elementi listona =
   match (elementi,listona) with
     ([],l) -> []
   | (x::xs,l) -> (x, conta x listona)::(contatutti xs listona)
-;;
 
 let contatutti' elementi listona =
   let rec aux acc elem list =
@@ -103,14 +113,13 @@ let contatutti' elementi listona =
 let comp (_,x) (_,y) = if x<y then -1
                        else if x=y then 0
                        else 1
-;;
+
 let sort l = List.sort comp l
 ;;
 
 let rec primi = function
     [] -> []
   | (x,y)::l -> x::(primi l)
-;;
 
 let primi' ls =
   let rec aux acc = function
