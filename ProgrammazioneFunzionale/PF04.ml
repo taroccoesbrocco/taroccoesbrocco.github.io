@@ -66,10 +66,10 @@ let upto m n =
 ;;
 
 let rec take' n l =
-  let rec aux acc n = function
+  let rec aux acc n' = function
       [] -> acc
-    | x::xs -> if n<=0 then acc
-               else aux (x::acc) (n-1) xs
+    | x::xs -> if n'<=0 then acc
+               else aux (x::acc) (n'-1) xs
   in List.rev (aux [] n l)
 ;;
 
