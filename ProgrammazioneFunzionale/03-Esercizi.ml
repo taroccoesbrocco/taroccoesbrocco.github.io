@@ -15,7 +15,6 @@ let somma_ore' (h1,m1) (h2,m2) =
 ;;
 
 exception NoInput 
-;;
 
 let read_max () =
   try let m = read_int()
@@ -25,6 +24,21 @@ let read_max () =
            with _ -> m'
          in aux m 
   with _ -> raise NoInput
+
+(*Versione alternativa*)
+let read_max' () =
+  let rec aux m =
+    try aux (max (read_int()) m)
+    with _ -> m
+  in aux (read_int())
+
+(*La versione non funziona quando l'utente inserisce solo un intero. Perché?*)
+let read_max'' () =
+  let rec aux input m =
+    try aux true (max (read_int()) m)
+    with _ -> if input then m
+              else raise NoInput
+  in aux false (read_int())
 ;;
 
 let read_max_min () =
