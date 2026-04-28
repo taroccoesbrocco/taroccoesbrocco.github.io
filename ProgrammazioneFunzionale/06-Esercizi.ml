@@ -28,9 +28,9 @@ let rec dropwhile p = function
              else x::xs
 ;;
 
-let partition p = function
+let rec partition p = function
       [] -> ([],[])
-    | x::xs -> let (yes,no) = partition xs
+    | x::xs -> let (yes,no) = partition p xs
     	       in if p x then (x::yes, no)
                else (yes, x::no)
 
