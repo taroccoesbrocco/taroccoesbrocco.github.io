@@ -14,7 +14,6 @@ let rec takewhile p = function
     [] -> []
   | x::xs -> if p x then x::(takewhile p xs)
             else []
-;;
 
 (* La versione seguente non funziona correttamente. Perché?*)
 let rec takewhile' p = function
@@ -29,16 +28,22 @@ let rec dropwhile p = function
              else x::xs
 ;;
 
-let partition p l =
+let partition p = function
+      [] -> ([],[])
+    | x::xs -> let (yes,no) = partition xs
+    	       in if p x then (x::yes, no)
+               else (yes, x::no)
+
+(*Versione iterativa*)
+let partition' p l =
   let rec aux acc1 acc2 = function
       [] -> (acc1,acc2)
     | x::xs -> if p x then aux (x::acc1) acc2 xs
                else aux acc1 (x::acc2) xs
   in aux [] [] l
-;;
 
-(*Versione alternativa*)
-let partition' p l = (List.filter p l, List.filter (function x -> not (p x)) l)
+(*Versione alternativa, senza ricorsione*)
+let partition'' p l = (List.filter p l, List.filter (function x -> not (p x)) l)
 ;;
 
 let pairwith y l = List.map (function x -> (y,x)) l

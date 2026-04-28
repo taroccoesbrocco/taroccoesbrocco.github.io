@@ -65,12 +65,32 @@ let upto m n =
   in aux [] m n
 ;;
 
-let rec take' n l =
+let rec take n = function
+    [] -> []
+  | x::xs -> if n<=0 then []
+             else x :: take (n-1) xs
+
+(*Versione alternativa*)
+let rec take' n = function
+    [] -> []
+  | _ when n <= 0 -> []
+  | h::t -> h :: take (n-1) t
+
+(*Versione iterativa*)
+let rec take'' n l =
   let rec aux acc n' = function
       [] -> acc
     | x::xs -> if n'<=0 then acc
                else aux (x::acc) (n'-1) xs
   in List.rev (aux [] n l)
+
+(*Versione iterativa alternativa, meno performante*)
+let rec take''' n l =
+  let rec aux acc n' = function
+      [] -> acc
+    | x::xs -> if n'<=0 then acc
+               else aux (acc@[x]) (n'-1) xs
+  in aux [] n l
 ;;
 
 let rec flatten = function
