@@ -13,19 +13,29 @@ let find_applicata l = find (function x -> x*x < 30) l
 let rec takewhile p = function
     [] -> []
   | x::xs -> if p x then x::(takewhile p xs)
-            else []
+             else []
+
+(*Versione alternativa*)
+let rec takewhile' p = function
+    x::xs when p x -> x::(takewhile' p xs)
+  | _ -> [] 
 
 (* La versione seguente non funziona correttamente. Perché?*)
-let rec takewhile' p = function
+let rec takewhile'' p = function
     [] -> []
-  | x::xs -> if p x then x::(takewhile p xs)
-            else takewhile p xs
+  | x::xs -> if p x then x::(takewhile'' p xs)
+            else takewhile'' p xs
 ;;
 
 let rec dropwhile p = function
     [] -> []
   | x::xs -> if p x then dropwhile p xs
              else x::xs
+
+(*Versione alternativa*)
+let rec dropwhile' p = function
+    x::xs when p x -> dropwhile' p xs
+  | l -> l
 ;;
 
 let rec partition p = function
