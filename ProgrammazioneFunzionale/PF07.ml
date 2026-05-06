@@ -44,6 +44,34 @@ let sposta (x,y,dir) act =
 ;;
 
 
+type number = Int of int
+            | Float of float
+
+(* sum : number * number -> number *)
+let sum = function
+    (Int x,Int y) -> Int (x + y)
+  | (Int x,Float y) -> Float ((float x) +. y)
+  | (Float x,Int y) -> Float(x +. float y)
+  | (Float x,Float y) -> Float (x +. y)
+
+(*La versione seguente non funziona correttamente. Perché?*)
+let sum' = function
+    (Int x, Int y) -> Int (x + y)
+  | (Int x, Float y) -> Float (x +. y)
+  | (Float x, Int y) -> Float(x +. y)
+  | (Float x, Float y) -> Float (x +. y)
+
+let value  = function
+    Int n -> float n
+  | Float n -> n
+
+(*La versione seguente non comipla. Perché?*)
+let value' = function
+    Int n -> n
+  | Float n -> n
+;;
+
+
 type nat = Zero | Succ of nat
 
 let rec int_of_nat = function
@@ -53,6 +81,32 @@ let rec int_of_nat = function
 let rec somma (n,m) = match n with
     Zero -> m
   | Succ k -> Succ(somma(k,m))
+
+let rec nat_of_int  = function
+    0 -> Zero
+  | n when n>0 -> Succ(nat_of_int (n-1))
+  | _ -> failwith "The input is not a natural number"
+
+(*Versione alternativa*)
+let rec nat_of_int  = function
+    0 -> Zero
+  | n -> if n>0 then Succ(nat_of_int (n-1))
+         else failwith "The input is not a natural number"
+;;
+
+
+type 'a mylist = Nil | Cons of 'a * 'a mylist
+
+let l0 = Nil
+let l1 = Cons (1,Nil)
+let l2 = Cons (1, Cons (2, Nil))
+let l = Cons (1, Cons ('a', Nil))
+
+(*Si confronti con*)
+let l0' = []
+let l1' = 1 :: []
+let l2' = 1 :: (2 :: [])
+let l' = 1 :: ('c' :: [])
 ;;
 
 
@@ -61,37 +115,33 @@ let rec new_assoc x = function
   | (k,v)::rest -> if x=k then Some v
                    else new_assoc x rest
 
-(*Esempio*)
-let alist = [(0,"pippo"); (1,"pluto"); (2,"paperino")] ;;
-List.map (function x -> new_assoc x alist) [1;5;3;0;4] ;;
-List.map (function x -> List.assoc x alist) [1;5;3;0;4] ;;
-
-let valore = function
-    Some n -> n
-  | None -> failwith "There is no value."
-
-(* assoc_all lista chiavi = valori associati a chiavi in lista,
-ignorando le chiavi indefinite *)
-let assoc_all lista chiavi =
-  List.map valore (List.filter ((<>) None) (List.map (function x -> new_assoc x lista) chiavi))
-;;
-let rec new_assoc x = function
+(*Versione alternativa*)
+let rec new_assoc' x = function
     [] -> None
-  | (k,v)::rest -> if x=k then Some v
-                   else new_assoc x rest
+  | (k,v)::rest when k=x -> Some v
+  | _::rest -> new_assoc' x rest
+
+(*La versione seguente non funziona correttamente. Perché?*)
+let rec new_assoc'' x = function
+    [] -> None
+  | (k,v)::rest when k=x -> Some v
+  | rest -> new_assoc'' x rest
 
 (*Esempio*)
-let alist = [(0,"pippo"); (1,"pluto"); (2,"paperino")] ;;
-List.map (function x -> new_assoc x alist) [1;5;3;0;4] ;;
-List.map (function x -> List.assoc x alist) [1;5;3;0;4] ;;
+let dizionario = [(0,"pippo"); (1,"pluto"); (2,"paperino")] ;;
+List.map (function x -> new_assoc x dizionario) [1;5;3;0;4] ;;
+List.map (function x -> List.assoc x dizionario) [1;5;3;0;4] ;;
 
 let valore = function
     Some n -> n
   | None -> failwith "There is no value."
 
-(* assoc_all lista chiavi = valori associati a chiavi in lista,
-ignorando le chiavi indefinite *)
-let assoc_all dizio chiavi =
-  List.map valore (List.filter ((<>) None) (List.map (function x -> new_assoc x dizio) chiavi))
+(* assoc_all dizionario chiavi = valori associati a chiavi in dizionario, ignorando le chiavi indefinite *)
+let assoc_all dizionario chiavi =
+  List.map valore (List.filter ((<>) None) (List.map (function x -> new_assoc x dizionario) chiavi))
+
+(*Esempio*)
+assoc_all dizionario [1;5;3;0;4] 
 ;;
+
 
