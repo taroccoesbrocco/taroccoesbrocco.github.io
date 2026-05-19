@@ -106,10 +106,15 @@ let rec reflect = function
   | Tr(x,tr1,tr2) -> Tr(x, reflect tr2, reflect tr1)
 
 let fulltree n =
-  let rec aux h root = 
+  let rec aux h root = (* aux : int -> int -> int tree *)
     if h=0 then Empty
     else Tr(root, aux (h-1) (2*root), aux (h-1) (2*root+1))
   in aux n 1
+
+(* height : 'a tree -> int *)
+let rec height = function
+    Empty -> -1
+  | Tr(_,t1,t2) -> 1 + max (height t1) (height t2)
 
 let rec balanced = function
     Empty -> true
@@ -117,9 +122,8 @@ let rec balanced = function
      balanced t1 && balanced t2
      && abs(height t1 - height t2) <= 1
 
+(*Versione alternativa*)
 exception NotBalanced
-(* balanced : 'a tree -> bool *)
-(* balanced t = l’albero t e’ bilanciato *)
 (* aux: ’a tree -> int *)
 (* aux t solleva NotBalanced se t non e’ bilanciato, altrimenti
 riporta l’altezza di t *)
@@ -158,11 +162,13 @@ let rec inorder = function
   | Tr(x,left,right) -> (inorder left)@[x]@(inorder right)
 ;;
 
+(* take : int -> 'a list -> 'a list *)
 let rec take n = function
     [] -> []
   | x::xs -> if n<=0 then []
              else x::(take (n-1) xs)
 
+(* drop : int -> 'a list -> 'a list *)
 let rec drop n = function
     [] -> []
   | l -> if n>0 then drop (n-1) (List.tl l)
@@ -179,27 +185,35 @@ let rec balinorder = function
              in let l' = drop n l
                 in Tr(List.hd l', balinorder(take n l), balinorder(List.tl l'))
 
+(*Versione alternativa*)
+let rec balinorder' = function
+    [] -> Empty
+  | l -> let n = (List.length l)/2
+             in Tr(List.nth l n, balinorder'(take n l), balinorder'(drop (n+1) l))
+
 let balpostorder l = reflect(balpreorder (List.rev l))
 ;;
 
+(* subset : 'a list -> 'a list -> 'a list *)
 let subset l1 l2 = List.for_all (function x -> List.mem x l2) l1
 
 let foglie_in_lista l t =
-  let rec aux acc = function
+  let rec aux acc = function (* aux : 'a list -> 'a tree -> 'a list *)
       Empty -> acc
     | Tr(x,Empty,Empty) -> x::acc
     | Tr(_,left,right) -> aux (aux acc left) right
   in subset (aux [] t) l
 
 (*Versione alternativa*)
+(* lista_foglie : 'a tree -> 'a list *)
 let lista_foglie t = 
-  let rec aux acc = function
+  let rec aux acc = function (* aux : 'a list -> 'a tree -> 'a list *)
       Empty -> acc
     | Tr(x,Empty,Empty) -> x::acc
     | Tr(_,left,right) -> aux (aux acc left) right
   in aux [] t
 
-let foglie_in_lista l t = subset (lista_foglie t) l
+let foglie_in_lista' l t = subset (lista_foglie t) l
 
 let num_foglie t =
   let rec aux acc = function
@@ -234,14 +248,14 @@ exception MaxNotFound
 
 (*Supponiamo che le foglie siano etichettate da interi nonnegativi*)
 let foglia_costi t =
-  let rec aux (lst,tot) = function
+  let rec aux (lst,tot) = function (* aux : (int*int) -> int tree -> ((int*int) list,int) *)
       Empty -> (lst,tot)
     | Tr(n,Empty,Empty) -> ((n,n+tot)::lst,n+tot)
     | Tr(n,l,r) -> aux (fst(aux (lst,n+tot) l), n+tot)  r
   in fst (aux ([],0) t)
 
 let foglia_costo t =
-  let rec aux (a,b) = function
+  let rec aux (a,b) = function (* aux : (int*int) -> (int*int) list -> (int*int) *)
       [] -> (a,b)
     | (n,m)::xs -> if b>m then aux (a,b) xs
                    else aux (n,m) xs

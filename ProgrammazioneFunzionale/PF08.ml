@@ -61,16 +61,44 @@ let rec height' t =
   else 1 + max (height' (left t)) (height' (right t))
 ;;
 
+(* add : 'a -> ('a*int) list -> ('a*int) list *)
 let rec add x = function
     [] -> [(x,1)]
   | (y,n)::ys -> if y=x then (y,n+1)::ys
                  else (y,n)::(add x ys)
 
+(*algoritmo 2*)
 let count t =
   let rec aux result = function
       Empty -> result
     | Tr(x,left,right) ->  aux (aux (add x result) left) right  
   in aux [] t
+
+(*Versione aternativa, algoritmo 2*)
+let count' t =
+  let rec aux result = function
+      Empty -> result
+    | Tr(x,left,right) ->  aux (add x (aux result left)) right  
+  in aux [] t
+
+(*Versione alternativa, algoritmo 1*)
+(* merge : ('a*int) list -> ('a*int) list -> ('a*int) list *)
+let merge l1 l2 =
+  let pair_compare (x,_) (y,_) = if x=y then 0
+                                 else if x>y then 1
+                                 else -1
+  in let l1' = List.sort pair_compare l1 (*sort l1 according to the increasing order on the first component of its pairs*)
+     and l2'= List.sort pair_compare l2
+     in let rec aux acc l' l'' = match (l',l'') with
+      ([],l) | (l,[]) -> (List.rev acc)@l
+      | ((x,n)::xs, (y,m)::ys) -> if x=y then aux ((x,n+m)::acc) xs ys
+                                  else if x>y then aux ((y,m)::acc) l' ys
+                                  else aux ((x,n)::acc) xs l''
+        in aux [] l1' l2'
+
+let rec count'' = function
+    Empty -> []
+  | Tr(x,l,r) -> merge (add x (count'' l)) (count'' r)
 ;;
 
 let t = Tr("A",
@@ -141,34 +169,10 @@ let morse c =
 ;;
 
 (* treeprint : (’a -> ’b) -> ’a tree -> unit *)
-(* treeprint print t = stampa, con opportuna indentazione, l’albero t,
-utilizzando la funzione print per la stampa dei nodi *)
+(* treeprint print t = stampa, con opportuna indentazione, l’albero t, utilizzando la funzione print per la stampa dei nodi. *)
 (* aux: string -> ’a tree -> unit *)
-(* aux ind t stampa l’albero t, premettendo ad ogni riga un certo
-numero di spazi seguiti dalla stringa ind.
-Il numero di spazi viene incrementato per la stampa di
-ciascun sottoalbero *)
-let treeprint print t =
-  let rec aux ind = function
-      Empty -> print_string (ind ^ "Empty")
-    | Tr(x,Empty,Empty) ->
-       begin
-         print_string (ind^"Tr(");
-         print x;
-         print_string ",Empty,Empty)"
-       end
-    | Tr(x,t1,t2) ->
-       begin
-         print_string (ind^"Tr(");
-         print x;
-         print_string ",\n";
-         aux ("  "^ind) t1;
-         print_string ",\n";
-         aux ("  "^ind) t2;
-         print_string ")"
-       end
-  in aux "" t ;
-     print_string "\n"         
+(* aux ind t stampa l’albero t, premettendo ad ogni riga un certo numero di spazi seguiti dalla stringa ind.
+Il numero di spazi viene incrementato per la stampa di ciascun sottoalbero. *)
 let treeprint print t =
   let rec aux ind = function
       Empty -> print_string (ind ^ "Empty")
