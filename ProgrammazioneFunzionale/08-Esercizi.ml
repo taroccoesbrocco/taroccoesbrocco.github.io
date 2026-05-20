@@ -189,15 +189,21 @@ let rec balinorder = function
 let rec balinorder' = function
     [] -> Empty
   | l -> let n = (List.length l)/2
-             in Tr(List.nth l n, balinorder'(take n l), balinorder'(drop (n+1) l))
+         in Tr(List.nth l n, balinorder'(take n l), balinorder'(drop (n+1) l))
 
 let balpostorder l = reflect(balpreorder (List.rev l))
 ;;
 
+let rec foglie_in_lista lst = function
+    Empty -> true
+  | Tr(x,Empty,Empty) -> List.mem x lst
+  | Tr(_,l,r) -> (foglie_in_lista lst l) && (foglie_in_lista lst r)
+
+(*Versione alternativa*)
 (* subset : 'a list -> 'a list -> 'a list *)
 let subset l1 l2 = List.for_all (function x -> List.mem x l2) l1
 
-let foglie_in_lista l t =
+let foglie_in_lista' l t =
   let rec aux acc = function (* aux : 'a list -> 'a tree -> 'a list *)
       Empty -> acc
     | Tr(x,Empty,Empty) -> x::acc
@@ -213,42 +219,56 @@ let lista_foglie t =
     | Tr(_,left,right) -> aux (aux acc left) right
   in aux [] t
 
-let foglie_in_lista' l t = subset (lista_foglie t) l
+let foglie_in_lista'' l t = subset (lista_foglie t) l
 
-let num_foglie t =
-  let rec aux acc = function
+let rec num_foglie = function
+    Empty -> 0
+  | Tr(_,Empty,Empty) -> 1
+  | Tr(_,l,r) -> num_foglie l + (num_foglie r)
+
+(*Versione iterativa*)
+let num_foglie' t =
+  let rec aux acc = function (* aux : int -> 'a tree -> int *)
       Empty -> acc
     | Tr(_,Empty,Empty) -> acc+1
     | Tr(_,l,r) -> aux (aux acc l) r
   in aux 0 t
 
 (*Versione alternativa*)
-let num_foglie' t = List.length (lista_foglie t)
+let num_foglie'' t = List.length (lista_foglie t)
 ;;
 
 exception TooLong
 
 let rec segui_bool l = function
     Empty -> raise TooLong
+  | Tr(n,left,right) -> if l=[] then n
+                        else if List.hd l then segui_bool (List.tl l) left
+                        else segui_bool (List.tl l) right
+
+(*Versione alternativa*)
+let rec segui_bool' l = function
+    Empty -> raise TooLong
   | Tr(n,left,right) -> try let b = List.hd l in
-                            if b=true then segui_bool (List.tl l) left
-                            else segui_bool (List.tl l) right
+                            if b then segui_bool' (List.tl l) left
+                            else segui_bool' (List.tl l) right
                         with Failure _ -> n
 
 (*Versione alternativa*)
-let rec segui_bool' l t  = match (l,t) with
+let rec segui_bool'' l t  = match (l,t) with
     (_,Empty) ->  raise TooLong
   | ([],Tr(n,left,right)) ->  n
-  | (x::xs,Tr(n,left,right)) -> if x then segui_bool' xs left
-                                else segui_bool' xs right
+  | (x::xs,Tr(n,left,right)) -> if x then segui_bool'' xs left
+                                else segui_bool'' xs right
 ;;
 
 
 exception MaxNotFound
 
 (*Supponiamo che le foglie siano etichettate da interi nonnegativi*)
-let foglia_costi t =
-  let rec aux (lst,tot) = function (* aux : (int*int) -> int tree -> ((int*int) list,int) *)
+(* foglia_costi : int tree -> (int*int) list *)
+let foglia_costi t = 
+  let rec aux (lst,tot) = function (* aux : (int*int) list * int -> int tree -> ((int*int) list * int) *)
       Empty -> (lst,tot)
     | Tr(n,Empty,Empty) -> ((n,n+tot)::lst,n+tot)
     | Tr(n,l,r) -> aux (fst(aux (lst,n+tot) l), n+tot)  r
