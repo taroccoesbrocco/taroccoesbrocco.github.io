@@ -109,7 +109,12 @@ let rec listaGuida l t = match (l,t) with
   | (n::xs,Tr(_,ts)) -> listaGuida xs (List.nth ts n)
 ;;
 
-let tutte_foglie_costi t =
+let rec tutte_foglie_costi = function
+      Tr(n,[]) -> [(n,n)]
+    | Tr(n,ts) -> List.map (fun (foglia,costo) -> (foglia,costo+n)) (List.flatten (List.map tutte_foglie_costi ts)) 
+
+(*Versione alternativa*)
+let tutte_foglie_costi' t =
   let rec aux tot l = function (* aux : int -> int ntree list -> (int*int) list *)
       Tr(n,[]) -> (n,tot+n)::l
     | Tr(n,ts) -> List.flatten (List.map (aux (tot+n) l) ts) 
@@ -131,10 +136,7 @@ let foglia_costo'' t = let l = tutte_foglie_costi t
                        in List.fold_left (fun (foglia1,costo1) (foglia2,costo2) -> if costo1>costo2 then (foglia1,costo1)
                                                                                    else (foglia2,costo2))
                             (List.hd l) (List.tl l)
-
-(*Versione alternativa*)
-let foglia_costo t = (*backtrack*)
-  let rec aux (n,cost) tot = function (* aux : int*int -> int -> int ntree list -> int*int *)
+;;
 
 let ramo_da_lista t l k =
   let rec aux acc = function 
