@@ -191,10 +191,16 @@ let search_cycle graph start = let f = fun x -> try Some (search_path graph x ((
                                                 with Not_found -> None
                                in let paths_some = List.map f (successori start graph)
                                   in try start :: (value (List.hd(List.filter (fun x -> x<>None) paths_some)))
-                                     with _ -> failwith "There is no cycle."
+                                     with _ -> failwith "There is no cycle"
 
 (*Versione alternativa*)
-let search_cycle' g start =
+let search_cycle' graph start = let f = fun x -> try Some (search_path graph x ((=) start))
+                                                with Not_found -> None
+                               in try start :: (List.hd(List.filter_map f (successori start graph)))
+                                     with _ -> failwith "There is no cycle"
+
+(*Versione alternativa*)
+let search_cycle'' g start =
   let rec aux visited = function (* aux : 'a list -> 'a list -> 'a list *)
       [] -> raise Not_found
     | y::ys -> try if y=start then List.rev (start::visited)
@@ -204,5 +210,8 @@ let search_cycle' g start =
                         with _ -> aux (y::visited) (List.tl s)
                with _ -> aux visited ys
   in aux [start] (successori start g)
+
+(*La versione seguente non funziona correttamente. Perché?*)
+let search_cycle''' graph start =  start ::  (List.hd(List.map (fun x -> search_path graph x ((=) start)) (successori start graph)))
 ;;
                                           

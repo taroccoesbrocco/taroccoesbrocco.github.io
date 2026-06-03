@@ -147,9 +147,15 @@ let value = function
   | None -> raise Not_found
 
 let from_sit sit = 
-  let aux x = try Some (applica x sit)
+  let aux x = try Some (applica x sit) (* aux :  azione -> (obj list * obj list) option *)
               with _ -> None
   in List.map value (List.filter ((<>) None) (List.map aux actions))
+
+(*Versione Lternativa*)
+let from_sit' sit = 
+  let aux x = try Some (applica x sit) (* aux :  azione -> (obj list * obj list) option *)
+              with _ -> None
+  in List.filter_map aux actions
 ;;
 
 

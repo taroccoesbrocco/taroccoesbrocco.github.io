@@ -140,6 +140,9 @@ let valore = function
 let assoc_all dizionario chiavi =
   List.map valore (List.filter ((<>) None) (List.map (function x -> new_assoc x dizionario) chiavi))
 
+(*Versione alternativa*)
+let assoc_all' dizionario chiavi = List.filter_map (function x -> new_assoc x dizionario) chiavi
+
 (*Esempio*)
 assoc_all dizionario [1;5;3;0;4] 
 ;;

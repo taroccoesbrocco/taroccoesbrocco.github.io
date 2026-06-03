@@ -65,4 +65,25 @@ let ciclo graph start = let f = fun x -> try Some (search_path graph x ((=) star
                         in let paths_some = List.map f (vicini start graph)
                            in  try start :: (value (List.hd(List.filter (fun x -> x<>None) paths_some)))
                                with _ -> failwith "There is no cycle."
+
+(*Versione alternativa*)
+let ciclo' graph start = let f = fun x -> try Some (search_path graph x ((=) start))
+                                                with Not_found -> None
+                               in try start :: (List.hd(List.filter_map f (vicini start graph)))
+                                     with _ -> failwith "There is no cycle"
+
+(*Versione alternativa*)
+let ciclo'' g start =
+  let rec aux visited = function (* aux : 'a list -> 'a list -> 'a list *)
+      [] -> raise Not_found
+    | y::ys -> try if y=start then List.rev (start::visited)
+                   else if List.mem y visited then aux visited ys
+                   else let s = vicini y g in
+                        try aux (y::visited) [List.hd s]
+                        with _ -> aux (y::visited) (List.tl s)
+               with _ -> aux visited ys
+  in aux [start] (vicini start g)
+
+(*La versione seguente non funziona correttamente. Perché?*)
+let ciclo''' graph start =  start ::  (List.hd(List.map (fun x -> search_path graph x ((=) start)) (vicini start graph)))
 ;;
