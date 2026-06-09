@@ -16,6 +16,27 @@ let t = Tr(1,
                        Tr(18,[leaf 19; leaf 20])])])])
 ;;
 
+(* Calcola il massimo in una lista: max_list : 'a list -> 'a *)
+let rec max_list = function
+    [] -> failwith "No element in the list."
+  | [x] -> x
+  | x::xs -> max x (max_list xs)
+
+(* Calcola l'altezza di un albero: height : 'a ntree -> int *)
+let rec height (Tr(_,ts)) = match ts with
+    [] -> 0
+  | ts -> 1 + max_list (List.map height ts)
+
+(* Versione alternativa *)
+let rec height (Tr(_,ts)) = match  with
+    [] -> 0
+  | _ -> 1+ maxheight ts
+and maxheight = function (*maxheight : 'a ntree list -> int *) 
+    [] -> failwith "No tree in the list"
+  | [t] -> height t
+  | t::ts -> max (height t) (maxheight ts)
+;;
+
 type player = Min | Max
 type minmaxtree = Leaf of int
                 | Node of (player * int) * minmaxtree list

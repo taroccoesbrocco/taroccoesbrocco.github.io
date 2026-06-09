@@ -183,13 +183,13 @@ let search_path graph start p =
 (*Ricerca di un cammino senza cicli dal nodo di ingresso a un pozzo: search_path_to_sink : 'a graph -> 'a -> 'a list *)
 let search_path_to_sink graph start = search_path graph start (fun x -> successori x graph = [])
 
-(*Determinare il valore di un Some: value -> 'a option -> 'a *)
+(*Determinare il valore di un Some (pattern matching parziale, manca il caso None): value : 'a option -> 'a *)
 let value (Some x) = x
 
 (*Ricerca di un ciclo che parta dal nodo di ingresso: search_cyle : 'a graph -> 'a -> 'a list *)
 let search_cycle graph start = let f = fun x -> try Some (search_path graph x ((=) start))
                                                 with Not_found -> None
-                               in let paths_some = List.map f (successori start graph)
+                               in let paths_some = List.map f (successori start graph) (*paths_some : ('a list option) list *)
                                   in try start :: (value (List.hd(List.filter (fun x -> x<>None) paths_some)))
                                      with _ -> failwith "There is no cycle"
 
