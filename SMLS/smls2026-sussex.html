@@ -63,7 +63,7 @@ Programme: Friday 25<sup>th</sup> September 2026
 
   <li style="background-color:#f1f1f1">15:45&ndash;16:15 Coffee and discussion.</li>
 
-  <li>16:30&ndash;17:30 <a href="https://toriebarrett.github.io/">Victoria Barrett</a> (INRIA, France). <i><a href="#victoria-abstract">TBA</a></i>. </li>
+  <li>16:30&ndash;17:30 <a href="https://toriebarrett.github.io/">Victoria Barrett</a> (INRIA, France). <i><a href="#victoria-abstract">A fully local proof system for first-order logic</a></i>. </li>
 
 <!--  <li style="background-color:#f1f1f1">18:30&ndash; onwards: food and drinks at the <a href="https://www.theroyaloakoxford.co.uk">Royal Oak</a> pub.</li>
 -->
@@ -137,10 +137,15 @@ This is joint work with Nathanael Arkor, Yorgo Chamoun, Bryce Clarke, Hayato Nas
 <br>
 Automata over nested data operate over an infinite alphabet of `data values’, which have an underlying forest structure. Using game-semantic techniques, this hierarchical structure has proved useful in modelling program execution. Previously, these models were limited to bounded depth data, where the underlying tree structure has bounded depth, restricting their application to the study of loop-free programs. We introduce the first model of automata over unboundedly nested data, Unbounded Nested Data Class Memory Automata (UNDCMA). Through UNDCMA, we study contextual reachability and approximation for an ML-like language with loops.  Interestingly, emptiness is decidable for UNDCMA, but language inclusion is undecidable. These results imply decidability of reachability, and undecidability of approximation for the language.
 
-
-
 </p>
 
+<p id="victoria-abstract">
+<b><i>A fully local proof system for first-order logic</i>. <a href="https://toriebarrett.github.io/">Victoria Barrett</a>, INRIA (France).</b>
+<br>
+In the sequent calculus, the axiom rule can be restricted to propositional or predicate atoms, but this is not possible for the other structural rules such as contraction or cut. By moving to open deduction, a deep-inference formalism in which derivations can be more freely composed and inference rules can apply at any depth inside a formula, we are able to reduce more structural rules to their atomic form. This results in fully local proof systems for propositional classical logic, linear logic, and others in which the inference rules are as small as possible, doing only an amount of work that can be checked in constant time.
+
+However, it has been an open question whether the same can be done for first-order logic, where atoms have internal structure due to their term arguments. We show that by extending the syntax and pushing inference rules inside terms, predicates, and quantifiers, we are able to give a fully local proof system for first-order classical logic. We show that this is complete and conservative with respect to the standard system and we anticipate that the small inference rules will lead to good normalisation procedures like they have done in the propositional case.
+</p>
 
 
 
